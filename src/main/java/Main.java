@@ -20,57 +20,21 @@ d. Tek tek mal bazlı, malların hangi siparişlerde kaç adet olduğunun çıkt
 java kodu.
 *\
  */
-    public static  List<Siparis> getData() // Get Data from File
-    {
-        List<Siparis> siparisList = new ArrayList<Siparis>();
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("D:\\works\\java\\InterviewWs\\Abas\\src\\main\\java\\data.txt"));
-            String line = reader.readLine();
-            while (line != null) {
-                String [] values = line.split(" ");
-                Float x = Float.parseFloat(values[3]);
-                siparisList.add(new Siparis( Integer.valueOf(values[0])  ,Integer.valueOf(values[1]) ,Integer.valueOf(values[2]) ,Float.valueOf(values[3])));
-                line = reader.readLine();
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return siparisList;
 
-    }
 
-    public static List<Integer> getUniqueSiparisId(List<Siparis> siparisList) // Get Unique Values from Sipariş ID
-    {
-        List<Integer> uniqueValues = siparisList.stream()
-                .map(Siparis::getSiparisId) // Replace getFieldName with actual getter method
-                .distinct()
-                .collect(Collectors.toList());
-        System.out.println("Unique values of fieldName: " + uniqueValues);
-        return uniqueValues;
-    }
-
-    public static void calculateSumBySiparisId(  List<Siparis> siparisList ,  List<Integer> listSiparisId) // Calculate Sum by Sipariş Id
-    {
-        System.out.println("      SUM BY SIPARIS ID");
-        for(Integer siparisId : listSiparisId){
-            DoubleSummaryStatistics statistics =  siparisList.stream().filter(siparis -> siparis.getSiparisId().equals(siparisId))
-                    .map(Siparis::getBirimFiyat)
-                    .mapToDouble(Float::floatValue)
-                    .summaryStatistics();
-            System.out.println( siparisId + " --> " + statistics.getSum());
-        }
-
-    }
 
 
 
         public static  void main(String args[]){
+            Process process = new Process();
             System.out.println("   -----------App is started-----------");
-            List<Siparis> siparisList = Main.getData();
-            List<Integer> uniqueSiparisId =  Main.getUniqueSiparisId(siparisList);
-            Main.calculateSumBySiparisId(  siparisList,uniqueSiparisId);
+            List<Siparis> siparisList = process.getData();
+            List<Integer> uniqueSiparisId =  process.getUniqueSiparisId(siparisList);
+            List<Integer> uniqueMalzemeId =  process.getUniqueMalzemeId(siparisList);
+            process.calculateSumBySiparisId(  siparisList,uniqueSiparisId);
+            process.calculateAverageBySiparisId(  siparisList,uniqueSiparisId);
+            process.calculateSumByMalzemeId(  siparisList,uniqueMalzemeId);
+            process.listMalzemeBySiparisId(siparisList,uniqueSiparisId,uniqueMalzemeId);
             System.out.println("   -----------App is finished-----------");
 
 
