@@ -30,6 +30,7 @@ public class Process {
             reader = new BufferedReader(new FileReader("D:\\works\\java\\InterviewWs\\Abas\\src\\main\\java\\data.txt"));
             String line = reader.readLine();
             while (line != null) {
+                line = line.replace(',','.');  // virgüllü değerler . ile ifade edilmelidir.
                 String [] values = line.split(" ");
                 Float x = Float.parseFloat(values[3]);
                 siparisList.add(new Siparis( Integer.valueOf(values[0])  ,Integer.valueOf(values[1]) ,Integer.valueOf(values[2]) ,Float.valueOf(values[3])));
@@ -65,7 +66,7 @@ public class Process {
     }
     public  void calculateSumBySiparisId(  List<Siparis> siparisList ,  List<Integer> listSiparisId) // Calculate Sum by Sipariş Id
     {
-        System.out.println("      SUM BY SIPARIS ID");
+        System.out.println("  A) Üç siparişteki malların toplam     SUM BY SIPARIS ID");
 
         for(Integer siparisId : listSiparisId){
             DoubleSummaryStatistics statistics =  siparisList.stream().filter(siparis -> siparis.getSiparisId().equals(siparisId))
@@ -76,9 +77,22 @@ public class Process {
         }
     }
 
+    public  void calculateAverageBySiparisId(  List<Siparis> siparisList ,  List<Integer> listSiparisId) // Calculate Sum by Sipariş Id
+    {
+        System.out.println("   B) Üç siparişteki bütün malların ortalama fiyatı   ");
+        Float total ;
+        int count = 0;
+        for(Integer siparisId : listSiparisId){
+            DoubleSummaryStatistics statistics =  siparisList.stream().filter(siparis -> siparis.getSiparisId().equals(siparisId))
+                    .map(siparis -> siparis.getMiktar() * siparis.getBirimFiyat())
+                    .mapToDouble(Float::floatValue)
+                    .summaryStatistics();
+            System.out.println( siparisId + " nolu sipariş --> " + df.format( statistics.getAverage()) );
+        }
+    }
     public  void calculateSumByMalzemeId(  List<Siparis> siparisList ,  List<Integer> listMalzemeId) // Calculate Sum by Sipariş Id
     {
-        System.out.println("      SUM BY MALZEME ID");
+        System.out.println("    C) Üç siparişteki bütün malların tek tek mal bazlı ortalama fiyatı  ");
 
         for(Integer siparisId : listMalzemeId){
             DoubleSummaryStatistics statistics =  siparisList.stream().filter(siparis -> siparis.getMalNumarasi().equals(siparisId))
@@ -91,37 +105,12 @@ public class Process {
 
 
 
-    public  void calculateAverageBySiparisId(  List<Siparis> siparisList ,  List<Integer> listSiparisId) // Calculate Sum by Sipariş Id
-    {
-        System.out.println("      AVERAGE BY SIPARIS ID");
-        Float total ;
-        int count = 0;
-        for(Integer siparisId : listSiparisId){
-            DoubleSummaryStatistics statistics =  siparisList.stream().filter(siparis -> siparis.getSiparisId().equals(siparisId))
-                    .map(siparis -> siparis.getMiktar() * siparis.getBirimFiyat())
-                    .mapToDouble(Float::floatValue)
-                    .summaryStatistics();
-            System.out.println( siparisId + " --> " + df.format( statistics.getAverage()) );
-        }
 
-
-        /*
-        for(Integer siparisId : listSiparisId){
-            DoubleSummaryStatistics statistics =  siparisList.stream().filter(siparis -> siparis.getSiparisId().equals(siparisId))
-                    .map(Siparis::getBirimFiyat)
-                    .mapToDouble(Float::floatValue)
-                    .summaryStatistics();
-            System.out.println( siparisId + " --> " + statistics.getSum());
-        }
-
-
-         */
-    }
 
 
     public void listMalzemeBySiparisId(List<Siparis> siparisList ,  List<Integer> listSiparisId, List<Integer> listMalzemeId)
     {
-        System.out.println("      AVERAGE BY SIPARIS ID");
+        System.out.println("  D) Tek tek mal bazlı, malların hangi siparişlerde kaç adet olduğunu  ");
         Float total ;
         int count = 0;
         for(Integer malzemeId : listMalzemeId){
@@ -133,7 +122,7 @@ public class Process {
                         .map(siparis -> siparis.getMiktar())
                         .mapToDouble(Integer::intValue)
                         .summaryStatistics();
-                System.out.println( siparisId + " --> " + df.format( statistics.getSum()));
+                System.out.println( siparisId + " --> " + df.format( statistics.getSum()) + " adet bulunmaktadır");
 
             }
 
